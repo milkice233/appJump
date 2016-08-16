@@ -10,10 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
 import android.widget.TextView;
-
 import java.util.List;
 import butterknife.BindView;
-import butterknife.OnClick;
 import butterknife.OnItemClick;
 import butterknife.OnItemLongClick;
 import cn.abcdsxg.app.appJump.Activity.ItemActivity;
@@ -35,20 +33,23 @@ public class GridViewFragment extends BaseFragment {
 
     private static final String TAG = "GridViewFragment";
     public static final String PAGE_NUM = "PAGE_NUM";
+    public static final String ISDESKTOP = "ISDESKTOP";
     @BindView(R.id.gridViewApp)
     GridView gridView;
     GridViewAdapter mAdapter;
     List<AppInfo> appInfos;
     private int mPageNum;
     private DBManager dbManager;
+    boolean isDesktop;
     @Override
     public View setView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_gridview, container, false);
     }
 
-    public static Fragment newInstant(int page) {
+    public static Fragment newInstant(int page,boolean isDesktop) {
         Bundle args = new Bundle();
         args.putInt(PAGE_NUM, page);
+        args.putBoolean(ISDESKTOP,isDesktop);
         GridViewFragment pageFragment = new GridViewFragment();
         pageFragment.setArguments(args);
         return pageFragment;
@@ -64,6 +65,7 @@ public class GridViewFragment extends BaseFragment {
     private void getAppInfos() {
         dbManager=DBManager.getInstance();
         mPageNum = getArguments().getInt(PAGE_NUM);
+        isDesktop=getArguments().getBoolean(ISDESKTOP);
         appInfos= dbManager.queryAppInfoListByPage(mPageNum);
     }
 
@@ -77,14 +79,21 @@ public class GridViewFragment extends BaseFragment {
 
     @OnItemClick(R.id.gridViewApp)
     void onClickItem(int pos){
-        AppInfo appInfo=appInfos.get(pos);
-        SuUtils.startApp(mApplication,appInfo.getPkgName(),appInfo.getClsName(),null);
+        if(!isDesktop){
+            AppInfo appInfo = appInfos.get(pos);
+            ToolUtils.sendShortcut(getActivity(),appInfo,false);
+        }else {
+            AppInfo appInfo = appInfos.get(pos);
+            SuUtils.startApp(mApplication, appInfo.getPkgName(), appInfo.getClsName(),null);
+        }
     }
 
     @OnItemLongClick(R.id.gridViewApp)
     boolean onLongClickItem(int pos){
-        AppInfo appInfo=appInfos.get(pos);
-        showDialog(appInfo);
+        if(isDesktop) {
+            AppInfo appInfo = appInfos.get(pos);
+            showDialog(appInfo);
+        }
         return true;
     }
 
@@ -103,7 +112,7 @@ public class GridViewFragment extends BaseFragment {
             public void onClick(View view) {
                 longClickDialog.dismiss();
                 //创建快捷方式
-                ToolUtils.getShortcutToDesktopIntent(mApplication,appInfo);
+                ToolUtils.sendShortcut(getActivity(),appInfo,true);
             }
         });
         edit.setOnClickListener(new View.OnClickListener() {

@@ -49,15 +49,11 @@ public class GetAppInfoService extends Service {
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         PendingIntent pendingIntent=PendingIntent.getActivity(this
                 ,0,notificationIntent,PendingIntent.FLAG_UPDATE_CURRENT);
-//        //设置粘贴板
-//        if(!info.getClsName().equals(getPackageName()+".MainActivity")) {
-//            ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-//            cm.setPrimaryClip(ClipData.newPlainText("content", info.getClsName()));
-//            Toast.makeText(this, "类名复制成功", Toast.LENGTH_SHORT).show();
-//        }
+
         //获取是否显示状态栏图标
         boolean showIcon= SpUtil.getBooleanSp(this, Constant.SHOWICON);
-        boolean showClsName= SpUtil.getBooleanSp(this, Constant.SHOWCLSNAME);
+        //是否需要关闭通知栏的检测，这里的逻辑取反
+        breakTask= !SpUtil.getBooleanSp(this, Constant.SHOWCLSNAME);
         //设置notification并通知
         NotificationManager nf=(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         Notification notification=new NotificationCompat.Builder(getApplicationContext())
@@ -66,7 +62,7 @@ public class GetAppInfoService extends Service {
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setPriority(showIcon?NotificationCompat.PRIORITY_MAX:NotificationCompat.PRIORITY_MIN)
                 .setContentTitle("点击新建自定义页面")
-                .setContentText(showClsName?"当前页面:"+info.getClsName():"")
+                .setContentText("当前页面:"+info.getClsName())
                 .setContentIntent(pendingIntent)
                 .build();
         nf.notify(0,notification);

@@ -37,7 +37,7 @@
             android:name=".Activity.ShortCutActivity">
             <!-- 必须加上这个，否则无法直接使用自定的action -->
             <intent-filter>
-                <action android:name="android.intent.action.SHOW_APP_INFO" />
+                <action android:name="android.intent.action.CREATE_SHORTCUT" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>

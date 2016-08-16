@@ -9,10 +9,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import cn.abcdsxg.app.appJump.Base.BaseFragment;
 import cn.abcdsxg.app.appJump.Data.Constant;
@@ -31,7 +33,7 @@ public class SettingFragment extends BaseFragment {
     @BindView(R.id.switchShowIcon)
     SwitchCompat switchShowIcon;
     @BindView(R.id.editFlushTime)
-    AppCompatEditText editFlushTime;
+    EditText editFlushTime;
     @BindView(R.id.switchShowClsName)
     SwitchCompat switchShowClsName;
     @BindView(R.id.btn_save)
